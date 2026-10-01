@@ -1,0 +1,107 @@
+## Workout Recommendation Analysis – Project Notes
+
+The main idea of this project was to analyse an exercise dataset and then use the cleaned data to build a simple workout recommendation system.
+
+I started by loading the dataset and checking the basic structure using things like `head()`, `shape`, `columns`, `info()` and missing values. The dataset originally had 1,324 exercise records and multiple columns related to exercise names, body parts, equipment, target muscles, secondary muscles and instructions.
+
+During the cleaning stage, I found that the `image` and `gif_url` columns were completely empty, so I removed them. I also found that `category` and `body_part` contained the same information, so I kept `body_part` and removed the duplicate column. The instruction fields contained multiple languages, so I extracted the English instructions into separate columns.
+
+I also checked duplicate exercise names. There were a few repeated names, but after looking at them I noticed that some had different secondary muscles or slightly different instructions, so I did not remove them from the main dataset. Instead, duplicate exercise names are removed only when the final recommendations are shown.
+
+### EDA / Data Analysis Notes
+
+For the analysis part, I explored how exercises were distributed across different features.
+
+Some things I noticed:
+
+- Upper arms, upper legs, back, waist and chest had the largest number of exercises.
+- The most common target muscles included abs, pectorals, biceps, glutes, delts and triceps.
+- Bodyweight and dumbbell exercises were the most common equipment types.
+- Some equipment categories were inconsistent, for example `band` and `resistance band`, so I combined them into one category.
+- Secondary muscles were stored as lists, so I used `explode()` to analyse how often each secondary muscle appeared.
+- Shoulders, hamstrings, forearms and triceps appeared very often as secondary muscles.
+
+I also created bar charts for target muscles, equipment types and body parts to understand the distribution visually.
+
+### How the Recommendation System Works
+
+The recommendation system asks the user for:
+
+- Target muscle
+- Available equipment
+- Body part
+- Preferred secondary muscle, which is optional
+
+The target muscle is treated as the most important requirement.
+
+The scoring system I used is:
+
+- Target muscle match = 3 points
+- Equipment match = 2 points
+- Body part match = 1 point
+- Secondary muscle match = 1 point
+
+The highest possible score is therefore 7.
+
+The system first makes sure that the exercise actually matches the selected target muscle. After that, the other features are used to rank the available exercises.
+
+For example, if the user enters:
+
+`Chest + Dumbbell + Chest + Triceps`
+
+the word `chest` is mapped to `pectorals`, because that is how the target muscle is written in the dataset.
+
+An exercise that matches pectorals, dumbbell, chest and also uses triceps as a secondary muscle gets the full score of 7.
+
+I also added mappings for common inputs such as:
+
+- chest → pectorals
+- shoulders → delts
+- core → abs
+- dumbbells → dumbbell
+- cables → cable
+- bands → resistance band
+- bodyweight → body weight
+
+This was added so the user does not have to type the exact wording used inside the dataset.
+
+### Testing
+
+I tested the system using different workout profiles such as:
+
+- Chest with dumbbells
+- Biceps with cables
+- Glutes with bodyweight
+- Shoulders with resistance bands
+- Calves with a Smith machine
+
+The main test cases returned exercises with high recommendation scores, and several returned the maximum score of 7.
+
+### AI Usage
+
+I used AI assistance mainly for the recommendation-system side of the project.
+
+AI helped me with things such as:
+
+- Structuring the recommendation function
+- Improving the scoring system
+- Creating user-input validation
+- Creating mappings for user-friendly inputs
+- Debugging Python errors
+- Improving the final output format
+
+The data-analysis side of the project, including understanding the dataset, deciding what needed cleaning, exploring the columns, EDA, visualisations and interpreting the results, was done by me as part of my own learning process.
+
+I also went through the recommendation logic step by step so I could understand what each part was doing rather than only copying the code.
+
+### Things I Could Improve Later
+
+If I continue this project, I could add:
+
+- Beginner/intermediate/advanced difficulty levels
+- User fitness goals such as strength or muscle gain
+- More advanced recommendation methods
+- User feedback to improve recommendations
+- A Streamlit interface instead of running everything inside Jupyter
+
+For now, the project works as a rule-based recommendation system and demonstrates both data-analysis skills and basic recommendation-system logic.
